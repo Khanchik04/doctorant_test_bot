@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ағылшын тілі: Магистратураға дайындық</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Calm Academic Blue -->
+    <!-- Application Structure Plan: The application uses a fixed sidebar for navigation and a dynamic main content area. This structure allows users to easily switch between grammar topics without losing context, promoting focused, non-linear learning. Each topic is broken down into tabbed sections (Theory, Examples, Test, Practice) to prevent cognitive overload. Interactive quizzes with instant feedback are included at the end of each section to reinforce learning and simulate exam conditions. This design was chosen for its proven effectiveness in educational web applications, prioritizing user control and clear information architecture over a simple linear document. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation -> Interaction -> Justification. 1. Overall Structure -> Inform/Organize -> Doughnut Chart -> Hover tooltips -> Provides a quick visual summary of exam content distribution. 2. Topic Sections -> Organize/Inform -> Tabbed Interface -> Click tabs -> Segments complex information into digestible parts (theory, examples, tests). 3. Rules/Definitions -> Inform -> Styled Tables & Text -> Static -> Clear presentation of core rules. 4. Quizzes -> Test/Engage -> Interactive Radio Forms -> Select & Submit -> Active self-assessment with instant feedback. All interactions are built with vanilla JS to keep the application lightweight and fast. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; 
+        }
+        .nav-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #334155; 
+            border-left: 4px solid transparent;
+        }
+        .nav-link:hover {
+            background-color: #e2e8f0; 
+            color: #0f172a; 
+        }
+        .nav-link.active {
+            background-color: #e0f2fe; 
+            color: #0c4a6e; 
+            font-weight: 600;
+            border-left-color: #0ea5e9;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+        .tab-button.active {
+            background-color: #0ea5e9;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .quiz-option:hover {
+            background-color: #f0f9ff;
+        }
+        .quiz-result {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        .correct {
+            background-color: #dcfce7;
+            border-left: 4px solid #22c55e;
+        }
+        .incorrect {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            max-height: 350px;
+            width: 100%;
+            max-width: 400px;
+            margin: 1.5rem auto;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-64 lg:w-72 bg-white/80 backdrop-blur-sm border-r border-slate-200 p-4 md:fixed md:h-full">
+            <h1 class="text-xl font-bold text-slate-800 mb-6">Магистратура Тесті</h1>
+            <nav id="main-nav" class="space-y-2">
+                <a href="#" class="nav-link active" data-target="home">Басты бет</a>
+                <a href="#" class="nav-link" data-target="noun">I. Noun (Зат есім)</a>
+                <a href="#" class="nav-link" data-target="article">II. Article (Артикль)</a>
+                <a href="#" class="nav-link" data-target="adjective">III. Adjective (Сын есім)</a>
+                <a href="#" class="nav-link" data-target="pronoun">IV. Pronoun (Есімдік)</a>
+                <a href="#" class="nav-link" data-target="verb">VI. Verb (Етістік)</a>
+                <a href="#" class="nav-link" data-target="nonfinite">VII. Non-finite Forms</a>
+                <a href="#" class="nav-link" data-target="lexicology">XI. Lexicology</a>
+                <a href="#" class="nav-link" data-target="summary">Жалпы қорытынды</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 md:ml-64 lg:ml-72 p-4 sm:p-6 lg:p-8">
+            <div id="home" class="content-section active">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Ағылшын тілі: Лексика-грамматикалық тестке дайындық</h2>
+                <p class="text-lg text-slate-600 mb-6">
+                    Бұл интерактивті құрал Қазақстан Республикасында магистратураға түсуге арналған ағылшын тілі тестінің лексика-грамматикалық бөліміне кешенді дайындалуға арналған. Құрал тест спецификациясының барлық тақырыптарын, күрделілік деңгейлерін (A, B, C) және халықаралық стандарттарды (CEFR, IELTS) ескере отырып құрастырылған.
+                </p>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-2">Тест құрылымының визуалды көрінісі</h3>
+                    <p class="text-slate-600 mb-4">Бұл диаграмма тесттегі негізгі грамматикалық категориялардың шамамен таралуын көрсетеді. Ең көп назар аударуды қажет ететін тақырыптарды анықтауға көмектеседі.</p>
+                    <div class="chart-container">
+                        <canvas id="topicsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-container">
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const contentData = {
+            noun: {
+                title: "I. Noun (Зат есім)",
+                intro: "Зат есім — затты, құбылысты, ұғымды білдіретін сөз табы. Магистратура тестінде зат есімнің жекеше/көпше түрі, саналатын/саналмайтындығы және тәуелдік септігі жиі кездеседі. Бұл бөлімде осы тақырыптардың ғылыми және академиялық контекстегі қолданысы қарастырылады.",
+                tabs: [
+                    { 
+                        id: 'countable', 
+                        name: 'Саналатын/Саналмайтын',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Анықтама</h4>
+                            <p class="mb-4"><b>Countable nouns (Саналатын зат есімдер)</b> — данап санауға болатын заттар (a book, two students). <b>Uncountable nouns (Саналмайтын зат есімдер)</b> — абстрактілі ұғымдар, сұйықтықтар, заттар, санауға келмейтін ұғымдар (information, water, research). Олардың көпше түрі болмайды және олармен <i>much, little, a piece of</i> сөздері қолданылады.</p>
+                            <div class="overflow-x-auto mb-4">
+                                <table class="w-full text-sm text-left text-slate-600">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th class="p-3">Сипаттама</th><th class="p-3">Саналатын (Countable)</th><th class="p-3">Саналмайтын (Uncountable)</th></tr></thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-3 font-medium">Көпше түр</td><td class="p-3">Бар (theories)</td><td class="p-3">Жоқ (*researches)</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3 font-medium">Сан есіммен қолдану</td><td class="p-3">Иә (three hypotheses)</td><td class="p-3">Жоқ (*three knowledges)</td></tr>
+                                        <tr class="bg-white border-b"><td class="p-3 font-medium">Артикль 'a/an'</td><td class="p-3">Иә (a result)</td><td class="p-3">Жоқ (*an advice)</td></tr>
+                                        <tr class="bg-slate-50"><td class="p-3 font-medium">Көлемдік сөздер</td><td class="p-3">many, few</td><td class="p-3">much, little</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>The university requires tangible <b>evidence</b> and rigorous <b>analysis</b>, not unsubstantiated <b>opinions</b>. We have gathered a lot of <b>information</b>, but we still need more <b>data</b>.</i></p>
+                            <h4 class="text-lg font-semibold mb-2">Типтік тест сұрағы</h4>
+                            <div class="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                                <p class="font-medium mb-2">The professor gave us several important ___ before we started our research project.</p>
+                                <ul class="list-disc list-inside text-slate-700">
+                                    <li>A) advices</li>
+                                    <li>B) information</li>
+                                    <li>C) pieces of advice</li>
+                                    <li>D) knowledges</li>
+                                </ul>
+                                <p class="mt-2 text-sm"><b>Түсіндірме:</b> 'Advice' саналмайтын зат есім, сондықтан көпше түрде қолданылмайды. Оны санау үшін 'pieces of' тіркесі қолданылады. Дұрыс жауап: <b>C</b>.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'plural',
+                        name: 'Көпше түр',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Ерекше көпше түр формалары</h4>
+                            <p class="mb-4">Көптеген зат есімдер <i>-s/-es</i> жалғауы арқылы жасалса, кейбір латын, грек тілінен енген сөздердің ерекше формалары бар. Бұл формалар академиялық мәтіндерде жиі кездеседі.</p>
+                             <div class="overflow-x-auto mb-4">
+                                <table class="w-full text-sm text-left text-slate-600">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th class="p-3">Жекеше (Singular)</th><th class="p-3">Көпше (Plural)</th></tr></thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-3">phenomenon</td><td class="p-3">phenomena</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3">criterion</td><td class="p-3">criteria</td></tr>
+                                        <tr class="bg-white border-b"><td class="p-3">analysis</td><td class="p-3">analyses</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3">hypothesis</td><td class="p-3">hypotheses</td></tr>
+                                        <tr class="bg-white"><td class="p-3">datum</td><td class="p-3">data</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>The primary <b>criteria</b> for evaluating the research <b>hypotheses</b> were based on statistical <b>analyses</b> of empirical <b>data</b>.</i></p>
+                            <h4 class="text-lg font-semibold mb-2">Типтік тест сұрағы</h4>
+                            <div class="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                                <p class="font-medium mb-2">Several new ___ were discovered, challenging the existing scientific paradigm.</p>
+                                <ul class="list-disc list-inside text-slate-700">
+                                    <li>A) phenomenons</li>
+                                    <li>B) phenomena</li>
+                                    <li>C) phenomenas</li>
+                                    <li>D) phenomenon</li>
+                                </ul>
+                                <p class="mt-2 text-sm"><b>Түсіндірме:</b> 'Phenomenon' сөзі грек тілінен енген, оның көпше түрі 'phenomena' болады. Дұрыс жауап: <b>B</b>.</p>
+                            </div>
+                        `
+                    }
+                ],
+                quiz: [
+                    {
+                        q: "The library has a vast amount of ___ on quantum physics.",
+                        o: ["informations", "information", "an information", "pieces of informations"],
+                        a: 1
+                    },
+                    {
+                        q: "Based on the findings, several ___ were rejected by the committee.",
+                        o: ["hypothesis", "hypothesises", "hypotheses", "hypothesee"],
+                        a: 2
+                    },
+                    {
+                        q: "The government is implementing new ___ to improve public transport.",
+                        o: ["policy", "policys", "policies", "a policy"],
+                        a: 2
+                    },
+                    {
+                        q: "Can you give me ___ on how to apply for the grant?",
+                        o: ["some advices", "an advice", "some advice", "advices"],
+                        a: 2
+                    },
+                    {
+                        q: "The ___ of the experiment are currently under review.",
+                        o: ["result", "datas", "datum", "results"],
+                        a: 3
+                    }
+                ]
+            },
+            article: {
+                title: "II. Article (Артикль)",
+                intro: "Артикль — зат есімнің белгілі немесе белгісіз екенін білдіретін көмекші сөз. 'a/an' (белгісіз), 'the' (белгілі) және нөлдік артикльдің қолданылу ережелері, әсіресе географиялық атаулармен және жалқы есімдермен, тестте жиі кездеседі.",
+                tabs: [
+                    { 
+                        id: 'definite', 
+                        name: 'Definite/Indefinite',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Анықтама</h4>
+                            <p class="mb-4"><b>Indefinite Article (a/an)</b>: белгісіз, жалпылама, алғаш рет айтылған зат есіммен қолданылады. <b>Definite Article (the)</b>: белгілі, нақты, бұрын айтылған, жалғыз затпен, сондай-ақ ерекше жағдайларда қолданылады.</p>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал (Академиялық контекст)</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i><b>A</b> research paper must have <b>a</b> clear structure. <b>The</b> structure usually includes <b>an</b> introduction, <b>a</b> literature review, methodology, results, and <b>a</b> conclusion. <b>The</b> conclusion should summarize <b>the</b> main findings of <b>the</b> study.</i></p>
+                            <h4 class="text-lg font-semibold mb-2">Типтік тест сұрағы</h4>
+                            <div class="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                                <p class="font-medium mb-2">___ Earth revolves around ___ Sun.</p>
+                                <ul class="list-disc list-inside text-slate-700">
+                                    <li>A) -, the</li>
+                                    <li>B) The, the</li>
+                                    <li>C) An, a</li>
+                                    <li>D) The, -</li>
+                                </ul>
+                                <p class="mt-2 text-sm"><b>Түсіндірме:</b> Әлемдегі жалғыз, бірегей заттардың (планеталар, жұлдыздар) атаулары 'the' артиклімен қолданылады. Дұрыс жауап: <b>B</b>.</p>
+                            </div>
+                        `
+                    },
+                    {
+                        id: 'zero',
+                        name: 'Zero Article',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Нөлдік артикльдің қолданылуы</h4>
+                            <p class="mb-4">Нөлдік артикль келесі жағдайларда қолданылады:</p>
+                             <ul class="list-disc list-inside mb-4 pl-4 space-y-1">
+                                <li>Көпше түрдегі саналатын зат есімдермен (жалпылама мағынада): <i>Universities offer various courses.</i></li>
+                                <li>Саналмайтын зат есімдермен (жалпылама мағынада): <i>Knowledge is power.</i></li>
+                                <li>Адам, қала, көптеген елдердің атауларымен: <i>Newton, Almaty, Kazakhstan</i></li>
+                                <li>Көл, тау шыңдары, континент атауларымен: <i>Lake Balkhash, Mount Everest, Asia</i></li>
+                            </ul>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал (Географиялық атаулар)</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i><b>The</b> United Kingdom is an island nation, but <b>Greenland</b>, which is <b>the</b> world's largest island, is part of <b>Denmark</b>. <b>The</b> Pacific Ocean is larger than <b>the</b> Atlantic Ocean. They travelled to <b>the</b> Alps, but not to <b>Mount Elbrus</b>.</i></p>
+                        `
+                    }
+                ],
+                quiz: [
+                    {
+                        q: "She is studying ___ history of ___ Ancient Rome.",
+                        o: ["the, -", "-, the", "a, the", "the, the"],
+                        a: 1
+                    },
+                    {
+                        q: "___ Mount Everest is the highest peak in ___ Himalayas.",
+                        o: ["The, the", "-, the", "The, -", "-, -"],
+                        a: 1
+                    },
+                    {
+                        q: "We visited ___ Lake Baikal, which is ___ deepest lake in the world.",
+                        o: ["-, the", "the, a", "a, the", "the, the"],
+                        a: 0
+                    },
+                    {
+                        q: "He received ___ PhD in ___ economics from Harvard University.",
+                        o: ["a, -", "the, the", "a, the", "-, -"],
+                        a: 0
+                    },
+                    {
+                        q: "___ information you provided was extremely useful for our project.",
+                        o: ["A", "An", "-", "The"],
+                        a: 3
+                    }
+                ]
+            },
+            adjective: {
+                title: "III. Adjective (Сын есім)",
+                intro: "Сын есім зат есімді сипаттайды. Тестте сын есімнің шырайлары (degrees of comparison) және '-ing/-ed' формаларының айырмашылығына ерекше назар аударылады.",
+                tabs: [
+                    { 
+                        id: 'comparison', 
+                        name: 'Шырайлары',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Сын есім шырайлары</h4>
+                            <p class="mb-4"><b>Comparative (Салыстырмалы):</b> екі затты салыстыру (-er / more). <b>Superlative (Күшейтпелі):</b> үш немесе одан да көп заттың ішіндегі ең үздігін көрсету (-est / a.most).</p>
+                             <div class="overflow-x-auto mb-4">
+                                <table class="w-full text-sm text-left text-slate-600">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th class="p-3">Жай (Positive)</th><th class="p-3">Салыстырмалы (Comparative)</th><th class="p-3">Күшейтпелі (Superlative)</th></tr></thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-3">complex</td><td class="p-3">more complex</td><td class="p-3">the most complex</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3">good</td><td class="p-3">better</td><td class="p-3">the best</td></tr>
+                                        <tr class="bg-white"><td class="p-3">significant</td><td class="p-3">more significant</td><td class="p-3">the most significant</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>This new methodology is <b>more efficient</b> than the previous one, but the <b>most challenging</b> aspect remains data collection. The results were <b>less predictable</b> than we had anticipated.</i></p>
+                        `
+                    },
+                    {
+                        id: 'ing-ed',
+                        name: '-ing / -ed Adjectives',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Айырмашылығы</h4>
+                            <p class="mb-4"><b>-ing adjectives:</b> бір нәрсенің (зат, адам, жағдай) сипатын білдіреді (The lecture was <b>boring</b>). <b>-ed adjectives:</b> адамның немесе жануардың сезімін, күйін білдіреді (The students were <b>bored</b>).</p>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>The <b>confusing</b> nature of the instructions left the participants feeling <b>confused</b>. It was a <b>tiring</b> journey, and we were all <b>exhausted</b> by the end.</i></p>
+                            <h4 class="text-lg font-semibold mb-2">Типтік тест сұрағы</h4>
+                            <div class="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                                <p class="font-medium mb-2">The results of the study were quite ___, even to the experienced researchers.</p>
+                                <ul class="list-disc list-inside text-slate-700">
+                                    <li>A) surprised</li>
+                                    <li>B) surprising</li>
+                                    <li>C) surprise</li>
+                                    <li>D) surprisingly</li>
+                                </ul>
+                                <p class="mt-2 text-sm"><b>Түсіндірме:</b> Бұл жерде зерттеу нәтижелерінің сипаты айтылып тұр, сондықтан '-ing' формасы қолданылады. Дұрыс жауап: <b>B</b>.</p>
+                            </div>
+                        `
+                    }
+                ],
+                quiz: [
+                    {
+                        q: "This is by far ___ film I have ever seen.",
+                        o: ["the most interesting", "the more interesting", "most interesting", "more interesting"],
+                        a: 0
+                    },
+                    {
+                        q: "I was very ___ by the final chapter of the book.",
+                        o: ["disappointing", "disappointed", "disappoint", "disappointment"],
+                        a: 1
+                    },
+                    {
+                        q: "Of the two approaches, the first one is significantly ___.",
+                        o: ["the cheapest", "cheaper", "cheap", "more cheap"],
+                        a: 1
+                    },
+                    {
+                        q: "The documentary about climate change was deeply ___.",
+                        o: ["worrying", "worried", "worry", "worriedly"],
+                        a: 0
+                    },
+                    {
+                        q: "He is ___ than his brother.",
+                        o: ["more tall", "taller", "the tallest", "tall"],
+                        a: 1
+                    }
+                ]
+            },
+            pronoun: {
+                title: "IV. Pronoun (Есімдік)",
+                intro: "Есімдік зат есімнің, сын есімнің, сан есімнің орнына қолданылады. Тестте relative (who, which, that, whose), reflexive (myself, yourself) және possessive (mine, yours) есімдіктерінің дұрыс қолданылуы маңызды.",
+                tabs: [
+                    { 
+                        id: 'relative', 
+                        name: 'Relative Pronouns',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Relative есімдіктері</h4>
+                            <p class="mb-4">Бұл есімдіктер бағыныңқы сөйлемді негізгі сөйлеммен байланыстырады.</p>
+                             <div class="overflow-x-auto mb-4">
+                                <table class="w-full text-sm text-left text-slate-600">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th class="p-3">Есімдік</th><th class="p-3">Қолданылуы</th><th class="p-3">Мысал</th></tr></thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-3">who</td><td class="p-3">Адамдарға қатысты</td><td class="p-3">The scientist <b>who</b> won the prize...</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3">which</td><td class="p-3">Заттар мен жануарларға</td><td class="p-3">The theory <b>which</b> he proposed...</td></tr>
+                                        <tr class="bg-white border-b"><td class="p-3">that</td><td class="p-3">Адамдар мен заттарға</td><td class="p-3">The data <b>that</b> was collected...</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3">whose</td><td class="p-3">Тәуелділікті білдіреді</td><td class="p-3">The researcher <b>whose</b> work we cited...</td></tr>
+                                        <tr class="bg-white"><td class="p-3">where</td><td class="p-3">Орынға қатысты</td><td class="p-3">The lab <b>where</b> the experiment took place...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>The professor, <b>whose</b> recent publication has caused considerable debate, presented the findings <b>which</b> challenge the existing paradigm. The institute <b>where</b> he works is known for its cutting-edge research.</i></p>
+                        `
+                    }
+                ],
+                quiz: [
+                    {
+                        q: "This is the student ___ paper was published in a prestigious journal.",
+                        o: ["who", "which", "whose", "whom"],
+                        a: 2
+                    },
+                    {
+                        q: "The laboratory ___ the experiments are conducted is state-of-the-art.",
+                        o: ["which", "that", "where", "what"],
+                        a: 2
+                    },
+                    {
+                        q: "The participants, most of ___ were postgraduates, found the seminar useful.",
+                        o: ["who", "whom", "which", "whose"],
+                        a: 1
+                    },
+                    {
+                        q: "She had to complete the entire report by ___.",
+                        o: ["her", "herself", "she", "hers"],
+                        a: 1
+                    },
+                    {
+                        q: "Is this book ___ or his?",
+                        o: ["you", "your", "yours", "yourself"],
+                        a: 2
+                    }
+                ]
+            },
+            verb: {
+                title: "VI. Verb (Етістік)",
+                intro: "Етістік – ағылшын тілі грамматикасының өзегі. Тестте шақтардың (әсіресе Present Perfect vs. Past Simple), ырықсыз етістің (Passive Voice) және Future in the Past-тың дұрыс қолданылуы тексеріледі.",
+                tabs: [
+                    {
+                        id: 'tenses',
+                        name: 'Present Perfect vs Past Simple',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Негізгі айырмашылық</h4>
+                             <div class="overflow-x-auto mb-4">
+                                <table class="w-full text-sm text-left text-slate-600">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th class="p-3">Шақ</th><th class="p-3">Қолданылуы</th><th class="p-3">Сигнал сөздері</th></tr></thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-3 font-medium">Past Simple</td><td class="p-3">Аяқталған, нақты уақыты белгілі іс-әрекет</td><td class="p-3">yesterday, last year, in 2010, ago</td></tr>
+                                        <tr class="bg-slate-50"><td class="p-3 font-medium">Present Perfect</td><td class="p-3">Өткенде басталып, нәтижесі қазіргі сәтпен байланысты немесе уақыты белгісіз іс-әрекет</td><td class="p-3">already, yet, just, ever, never, for, since</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>The research team <b>published</b> its preliminary findings last month, but they <b>have not finished</b> the complete analysis yet. So far, they <b>have collected</b> data from over 200 participants.</i></p>
+                        `
+                    },
+                    {
+                        id: 'passive',
+                        name: 'Passive Voice',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Қолданылуы</h4>
+                            <p class="mb-4">Passive Voice (Ырықсыз етіс) ғылыми және ресми мәтіндерде жиі қолданылады. Басты назар іс-әрекетті орындаушыға емес, іс-әрекеттің өзіне немесе оның объектісіне аударылғанда қолданылады. Формуласы: <b>to be + Past Participle (V3)</b>.</p>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал (Ғылыми мәтін)</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>The samples <b>were collected</b> over a period of three months. The data <b>is being analyzed</b> by a team of experts. It <b>is believed</b> that the results <b>will be published</b> next year.</i></p>
+                            <h4 class="text-lg font-semibold mb-2">Типтік тест сұрағы</h4>
+                            <div class="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                                <p class="font-medium mb-2">In the 19th century, many new elements ___ by scientists.</p>
+                                <ul class="list-disc list-inside text-slate-700">
+                                    <li>A) discovered</li>
+                                    <li>B) were discovered</li>
+                                    <li>C) have been discovered</li>
+                                    <li>D) had discovered</li>
+                                </ul>
+                                <p class="mt-2 text-sm"><b>Түсіндірме:</b> Іс-әрекет объектіге ('many new elements') бағытталған және нақты өткен уақыт ('In the 19th century') көрсетілген, сондықтан Past Simple Passive қолданылады. Дұрыс жауап: <b>B</b>.</p>
+                            </div>
+                        `
+                    }
+                ],
+                quiz: [
+                    {
+                        q: "The researcher ___ the final report yet.",
+                        o: ["didn't finish", "hasn't finished", "hadn't finished", "not finished"],
+                        a: 1
+                    },
+                    {
+                        q: "The new bridge ___ last year.",
+                        o: ["was built", "is built", "has been built", "built"],
+                        a: 0
+                    },
+                    {
+                        q: "I ___ to him yesterday about the project.",
+                        o: ["have spoken", "had spoken", "spoke", "was speaking"],
+                        a: 2
+                    },
+                    {
+                        q: "This theory ___ widely accepted until new evidence emerged.",
+                        o: ["was not", "is not", "has not been", "had not been"],
+                        a: 0
+                    },
+                    {
+                        q: "Look at the clouds! It ___ rain.",
+                        o: ["will", "is going to", "is raining", "rains"],
+                        a: 1
+                    }
+                ]
+            },
+            nonfinite: {
+                title: "VII. Non-finite Verb Forms (Етістіктің жақсыз формалары)",
+                intro: "Инфинитив, герундий және есімше (Participle I/II) – етістіктің жақсыз формалары. Олардың сөйлемдегі қызметі мен модальді етістіктерден кейін қолданылуын білу маңызды.",
+                tabs: [
+                    {
+                        id: 'modal',
+                        name: 'Modal Verbs',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Модальді етістіктер</h4>
+                            <p class="mb-4">Модальді етістіктер (can, could, may, might, must, should, will, would) негізгі етістікке қосымша мағына береді (мүмкіндік, міндеттілік, рұқсат, болжам). Олардан кейін етістік <b>'to'</b> бөлшегінсіз инфинитив формасында келеді.</p>
+                            <h4 class="text-lg font-semibold mb-2">Өткен шақтағы болжам/өкініш</h4>
+                            <p class="mb-4">Өткендегі орындалмаған немесе белгісіз іс-әрекет туралы айтқанда <b>modal verb + have + V3</b> құрылымы қолданылады.</p>
+                             <div class="overflow-x-auto mb-4">
+                                <table class="w-full text-sm text-left text-slate-600">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th class="p-3">Құрылым</th><th class="p-3">Мағынасы</th></tr></thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-3">must have done</td><td class="p-3">Болғанына сенімді (логикалық қорытынды)</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3">might/may have done</td><td class="p-3">Мүмкін, болған шығар (сенімсіз болжам)</td></tr>
+                                        <tr class="bg-white border-b"><td class="p-3">could have done</td><td class="p-3">Істей алатын еді, бірақ істемеді</td></tr>
+                                        <tr class="bg-slate-50"><td class="p-3">should have done</td><td class="p-3">Істеу керек еді, бірақ істемеді (сын, өкініш)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>The results are inconclusive. We <b>should have used</b> a larger sample size. The device isn't working; someone <b>must have damaged</b> it.</i></p>
+                        `
+                    },
+                    {
+                        id: 'gerund-inf',
+                        name: 'Gerund vs Infinitive',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Қолдану ерекшеліктері</h4>
+                            <p class="mb-4">Кейбір етістіктерден кейін тек герундий (V-ing), кейбірінен кейін тек инфинитив (to + V) қолданылады. Бұл тізімдерді жаттау қажет.</p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h5 class="font-semibold">Verb + Gerund (V-ing)</h5>
+                                    <p class="text-sm text-slate-600">admit, avoid, consider, deny, enjoy, finish, suggest, mind, involve, risk</p>
+                                    <p class="mt-2 p-2 bg-slate-100 rounded"><i>The committee suggested <b>postponing</b> the decision.</i></p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold">Verb + Infinitive (to + V)</h5>
+                                    <p class="text-sm text-slate-600">agree, decide, hope, learn, manage, offer, plan, promise, refuse, want</p>
+                                    <p class="mt-2 p-2 bg-slate-100 rounded"><i>They decided <b>to launch</b> a new study.</i></p>
+                                </div>
+                            </div>
+                        `
+                    }
+                ],
+                quiz: [
+                    {
+                        q: "He is considering ___ for a PhD program abroad.",
+                        o: ["to apply", "applying", "apply", "applied"],
+                        a: 1
+                    },
+                    {
+                        q: "You ___ the professor earlier. Now it's too late.",
+                        o: ["must have asked", "could ask", "should have asked", "may ask"],
+                        a: 2
+                    },
+                    {
+                        q: "I managed ___ all the required data before the deadline.",
+                        o: ["collecting", "to collect", "collect", "collected"],
+                        a: 1
+                    },
+                    {
+                        q: "They avoided ___ any definitive conclusions in the report.",
+                        o: ["to make", "making", "make", "made"],
+                        a: 1
+                    },
+                    {
+                        q: "The experiment is too dangerous. We can't risk ___ it without proper precautions.",
+                        o: ["doing", "to do", "do", "done"],
+                        a: 0
+                    }
+                ]
+            },
+            lexicology: {
+                title: "XI. Lexicology (Лексикология)",
+                intro: "Бұл бөлімде сөздік қор, оның ішінде синонимдер, антонимдер және сөзжасам (word formation) тақырыптары қарастырылады. Академиялық мәтіндердегі сөздердің реңктерін ажырата білу маңызды.",
+                 tabs: [
+                    {
+                        id: 'synonyms',
+                        name: 'Синонимдер',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Контекстегі синонимдер</h4>
+                            <p class="mb-4">Көптеген сөздердің мағынасы ұқсас болғанымен, қолданылу аясы әртүрлі. Академиялық жазылымда дәл сөзді таңдау өте маңызды.</p>
+                             <div class="overflow-x-auto mb-4">
+                                <table class="w-full text-sm text-left text-slate-600">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th class="p-3">Сөз</th><th class="p-3">Синоним (Жалпы)</th><th class="p-3">Синоним (Академиялық)</th></tr></thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-3">show</td><td class="p-3">display</td><td class="p-3">indicate, demonstrate, illustrate</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3">big</td><td class="p-3">large</td><td class="p-3">significant, substantial, considerable</td></tr>
+                                        <tr class="bg-white"><td class="p-3">get</td><td class="p-3">receive</td><td class="p-3">obtain, acquire, gain</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h4 class="text-lg font-semibold mb-2">Күрделі мысал</h4>
+                            <p class="mb-4 p-3 bg-slate-100 rounded-lg"><i>The data clearly <b>demonstrates</b> a <b>significant</b> correlation between the two variables. To <b>obtain</b> reliable results, one must <b>acquire</b> a substantial amount of data.</i></p>
+                        `
+                    },
+                    {
+                        id: 'word-formation',
+                        name: 'Сөзжасам',
+                        content: `
+                            <h4 class="text-lg font-semibold mb-2">Префикстер мен суффикстер</h4>
+                            <p class="mb-4">Ағылшын тілінде префикстер (сөздің алдына) және суффикстер (сөздің соңына) арқылы жаңа сөздер жасалады. Бұл әсіресе сөз таптарын өзгерту үшін маңызды.</p>
+                             <div class="overflow-x-auto mb-4">
+                                <table class="w-full text-sm text-left text-slate-600">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-100"><tr><th class="p-3">Түбір сөз</th><th class="p-3">Суффикс</th><th class="p-3">Жаңа сөз (Сөз табы)</th></tr></thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-3">analyze (verb)</td><td class="p-3">-sis</td><td class="p-3">analysis (noun)</td></tr>
+                                        <tr class="bg-slate-50 border-b"><td class="p-3">science (noun)</td><td class="p-3">-tific</td><td class="p-3">scientific (adjective)</td></tr>
+                                        <tr class="bg-white border-b"><td class="p-3">precise (adjective)</td><td class="p-3">-ion</td><td class="p-3">precision (noun)</td></tr>
+                                        <tr class="bg-slate-50"><td class="p-3">valid (adjective)</td><td class="p-3">-ate, -ity</td><td class="p-3">validate (verb), validity (noun)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        `
+                    }
+                ],
+                quiz: [
+                    {
+                        q: "The study's findings are not yet ___. We need more data.",
+                        o: ["conclude", "conclusive", "conclusion", "concluding"],
+                        a: 1
+                    },
+                    {
+                        q: "It is ___ that we follow the safety procedures precisely.",
+                        o: ["critic", "critical", "criticism", "critically"],
+                        a: 1
+                    },
+                    {
+                        q: "The word 'significant' is a synonym for ___.",
+                        o: ["small", "important", "regular", "negative"],
+                        a: 1
+                    },
+                    {
+                        q: "The antonym of 'complex' is ___.",
+                        o: ["difficult", "easy", "simple", "hard"],
+                        a: 2
+                    },
+                    {
+                        q: "The ___ of this new method needs to be tested.",
+                        o: ["effective", "effectiveness", "effect", "effectively"],
+                        a: 1
+                    }
+                ]
+            },
+            summary: {
+                title: "Жалпы қорытынды кесте",
+                intro: "Бұл кестеде негізгі грамматикалық тақырыптардың салыстырмалы сипаттамасы берілген. Ол тақырыптар арасындағы байланыстарды түсінуге және ақпаратты жүйелеуге көмектеседі.",
+                content: `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-600">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                                <tr>
+                                    <th class="p-3">Категория</th>
+                                    <th class="p-3">Негізгі ереже</th>
+                                    <th class="p-3">Жиі кездесетін қате</th>
+                                    <th class="p-3">Практикалық кеңес</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b">
+                                    <td class="p-3 font-medium">Noun</td>
+                                    <td class="p-3">Саналмайтын зат есімдердің көпше түрі болмайды (information, advice).</td>
+                                    <td class="p-3">Using 'informations' or 'advices'.</td>
+                                    <td class="p-3">'a piece of' немесе 'items of' сияқты тіркестерді қолданыңыз.</td>
+                                </tr>
+                                <tr class="bg-slate-50 border-b">
+                                    <td class="p-3 font-medium">Article</td>
+                                    <td class="p-3">Жалқы, бірегей заттармен 'the' қолданылады (the Sun, the Earth).</td>
+                                    <td class="p-3">Forgetting 'the' with unique objects or geographical features (e.g. river names).</td>
+                                    <td class="p-3">Таулар тізбегімен 'the Alps', ал жеке шыңмен 'Mount Everest' (артикльсіз) қолданылатынын есте сақтаңыз.</td>
+                                </tr>
+                                <tr class="bg-white border-b">
+                                    <td class="p-3 font-medium">Present Perfect vs Past Simple</td>
+                                    <td class="p-3">Past Simple нақты уақыты бар аяқталған іс-әрекетке, Present Perfect нәтижесі қазірмен байланысты іс-әрекетке қолданылады.</td>
+                                    <td class="p-3">Using Present Perfect with a finished time expression (*I have seen him yesterday).</td>
+                                    <td class="p-3">Сөйлемде 'yesterday', 'last week', 'in 2010' сияқты уақыт меңзеуіштері болса, Past Simple қолданыңыз.</td>
+                                </tr>
+                                 <tr class="bg-slate-50 border-b">
+                                    <td class="p-3 font-medium">Passive Voice</td>
+                                    <td class="p-3">Іс-әрекеттің объектісі маңызды болғанда қолданылады (The report was written).</td>
+                                    <td class="p-3">Incorrect verb form (e.g. *The report was wrote).</td>
+                                    <td class="p-3">Ғылыми мәтіндерде 'I think' орнына 'It is believed that' сияқты ырықсыз етіс құрылымдарын қолдануға дағдыланыңыз.</td>
+                                </tr>
+                                <tr class="bg-white">
+                                    <td class="p-3 font-medium">Gerund/Infinitive</td>
+                                    <td class="p-3">Кейбір етістіктерден кейін тек герундий (suggest doing), кейбірінен кейін тек инфинитив (decide to do) келеді.</td>
+                                    <td class="p-3">Mixing them up (*I decided doing it).</td>
+                                    <td class="p-3">Негізгі етістіктер тізімін жаттап алыңыз.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `
+            }
+        };
+
+        const mainNav = document.getElementById('main-nav');
+        const contentContainer = document.getElementById('content-container');
+        const homeSection = document.getElementById('home');
+
+        function generateContent(targetId) {
+            const data = contentData[targetId];
+            if (!data) return '';
+
+            let tabsHtml = '';
+            if(data.tabs) {
+                tabsHtml = `<div class="mb-6 flex flex-wrap gap-2 border-b border-slate-200 pb-2">
+                    ${data.tabs.map((tab, index) => `<button class="tab-button ${index === 0 ? 'active' : ''}" data-target-tab="${targetId}-${tab.id}">${tab.name}</button>`).join('')}
+                </div>`;
+            }
+
+            let tabsContentHtml = '';
+            if (data.tabs) {
+                tabsContentHtml = data.tabs.map((tab, index) => `
+                    <div id="${targetId}-${tab.id}" class="tab-content ${index === 0 ? 'active' : ''}">
+                        ${tab.content}
+                    </div>
+                `).join('');
+            } else if (data.content) {
+                 tabsContentHtml = `<div class="tab-content active">${data.content}</div>`;
+            }
+
+
+            let quizHtml = '';
+            if (data.quiz) {
+                quizHtml = `
+                    <div class="mt-8 pt-6 border-t border-slate-200">
+                        <h3 class="text-xl font-semibold mb-4">Практикалық тест</h3>
+                        <div id="quiz-${targetId}" class="space-y-4">
+                            ${data.quiz.map((q, index) => `
+                                <div class="bg-white p-4 rounded-lg border border-slate-200">
+                                    <p class="font-medium mb-3">${index + 1}. ${q.q}</p>
+                                    <div class="space-y-2">
+                                        ${q.o.map((option, optIndex) => `
+                                            <label class="flex items-center p-2 rounded-md cursor-pointer quiz-option">
+                                                <input type="radio" name="q${index}-${targetId}" value="${optIndex}" class="mr-3">
+                                                <span>${option}</span>
+                                            </label>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="mt-6 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors" onclick="checkQuiz('${targetId}')">Жауаптарды тексеру</button>
+                        <div id="quiz-result-${targetId}" class="mt-4"></div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div id="${targetId}" class="content-section">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-2">${data.title}</h2>
+                    ${data.intro ? `<p class="text-lg text-slate-600 mb-6">${data.intro}</p>` : ''}
+                    <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+                        ${tabsHtml}
+                        ${tabsContentHtml}
+                        ${quizHtml}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderPage(targetId) {
+            homeSection.classList.remove('active');
+            
+            if (targetId === 'home') {
+                homeSection.classList.add('active');
+                contentContainer.innerHTML = '';
+            } else {
+                contentContainer.innerHTML = generateContent(targetId);
+                const section = document.getElementById(targetId);
+                if (section) {
+                    section.classList.add('active');
+                    const tabButtons = section.querySelectorAll('.tab-button');
+                    const tabContents = section.querySelectorAll('.tab-content');
+
+                    tabButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            tabButtons.forEach(btn => btn.classList.remove('active'));
+                            button.classList.add('active');
+
+                            tabContents.forEach(content => content.classList.remove('active'));
+                            document.getElementById(button.dataset.targetTab).classList.add('active');
+                        });
+                    });
+                }
+            }
+
+            const links = mainNav.querySelectorAll('.nav-link');
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.target === targetId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        mainNav.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (e.target.matches('.nav-link')) {
+                const targetId = e.target.dataset.target;
+                renderPage(targetId);
+            }
+        });
+
+        function checkQuiz(targetId) {
+            const data = contentData[targetId];
+            if (!data || !data.quiz) return;
+
+            let score = 0;
+            const quizContainer = document.getElementById(`quiz-${targetId}`);
+            
+            data.quiz.forEach((q, index) => {
+                const selected = quizContainer.querySelector(`input[name="q${index}-${targetId}"]:checked`);
+                const questionBlock = selected ? selected.closest('.bg-white') : quizContainer.querySelectorAll('.bg-white')[index];
+
+                questionBlock.classList.remove('correct', 'incorrect');
+                
+                if (selected) {
+                    if (parseInt(selected.value) === q.a) {
+                        score++;
+                        questionBlock.classList.add('correct');
+                    } else {
+                        questionBlock.classList.add('incorrect');
+                    }
+                } else {
+                     questionBlock.classList.add('incorrect');
+                }
+            });
+
+            const resultContainer = document.getElementById(`quiz-result-${targetId}`);
+            const percentage = Math.round((score / data.quiz.length) * 100);
+            resultContainer.innerHTML = `
+                <div class="p-4 rounded-lg ${percentage >= 70 ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}">
+                    <h4 class="font-bold text-lg">Сіздің нәтижеңіз: ${score} / ${data.quiz.length} (${percentage}%)</h4>
+                    <p>Түсіндірмелерді көру үшін сұрақтарды қайта қарап шығыңыз. Дұрыс жауаптар жасылмен, қате жауаптар қызылмен белгіленді.</p>
+                </div>
+            `;
+        }
+
+        const ctx = document.getElementById('topicsChart').getContext('2d');
+        const topicsChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Verb', 'Noun', 'Pronoun', 'Article', 'Adjective', 'Lexicology & Others'],
+                datasets: [{
+                    label: 'Тесттегі үлесі',
+                    data: [35, 15, 15, 10, 10, 15],
+                    backgroundColor: [
+                        '#0284c7',
+                        '#0ea5e9',
+                        '#38bdf8',
+                        '#7dd3fc',
+                        '#bae6fd',
+                        '#e0f2fe'
+                    ],
+                    borderColor: '#f8fafc',
+                    borderWidth: 4,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                           padding: 15,
+                           font: {
+                               size: 12
+                           }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        window.onload = () => {
+            renderPage('home');
+        };
+
+    </script>
+</body>
+</html>
